@@ -58,8 +58,24 @@ const mealOptions = {
   },
 }
 
-export function CateringPage({ bookingData, onContinue, onBack }) {
-  const [selectedMeals, setSelectedMeals] = useState({
+interface BookingData {
+  checkIn: number
+  checkOut: number
+  employeeData: {
+    name: string
+  }
+  guestHouse: string
+  room: {
+    number: string
+  }
+}
+
+export function CateringPage({ bookingData, onContinue, onBack }: { bookingData: BookingData; onContinue: (data: any) => void; onBack: () => void }) {
+  const [selectedMeals, setSelectedMeals] = useState<{
+    breakfast: string[]
+    lunch: string[]
+    dinner: string[]
+  }>({
     breakfast: [],
     lunch: [],
     dinner: [],
@@ -77,11 +93,9 @@ export function CateringPage({ bookingData, onContinue, onBack }) {
     total: 0,
   })
 
-  // Calculate number of days for the booking
   const days = Math.ceil((bookingData.checkOut - bookingData.checkIn) / (1000 * 60 * 60 * 24))
 
-  // Toggle meal selection
-  const toggleMeal = (mealType, itemId) => {
+  const toggleMeal = (mealType: keyof typeof mealOptions, itemId: string) => {
     setSelectedMeals((prev) => {
       const currentSelection = [...prev[mealType]]
 
@@ -99,19 +113,18 @@ export function CateringPage({ bookingData, onContinue, onBack }) {
     })
   }
 
-  // Calculate meal totals whenever selection changes
+ 
   useEffect(() => {
-    const calculateMealTotal = (mealType) => {
+    const calculateMealTotal = (mealType: keyof typeof mealOptions) => {
       let baseAmount = 0
       let gst = 0
 
-      // Process all selected items for this meal type
-      selectedMeals[mealType].forEach((itemId) => {
-        // Find the item in the appropriate category
+      selectedMeals[mealType].forEach((itemId: string) => {
+        
         let item = null
 
         if (mealType === "breakfast" || mealType === "dinner") {
-          // Check in veg, nonVeg, and beverages
+         
           item =
             mealOptions[mealType].veg.find((i) => i.id === itemId) ||
             mealOptions[mealType].nonVeg.find((i) => i.id === itemId) ||
@@ -120,31 +133,31 @@ export function CateringPage({ bookingData, onContinue, onBack }) {
           if (item) {
             baseAmount += item.price
 
-            // Apply GST based on item type
+            
             if (itemId.startsWith("bb") || itemId.startsWith("db")) {
-              // Beverages: 20% GST
+              
               gst += item.price * 0.2
             } else {
-              // Food items: 50% GST
+              
               gst += item.price * 0.5
             }
           }
         } else if (mealType === "lunch") {
-          // Lunch items have GST included
+          
           item =
             mealOptions[mealType].veg.find((i) => i.id === itemId) ||
             mealOptions[mealType].nonVeg.find((i) => i.id === itemId)
 
           if (item) {
-            // For lunch, GST is already included in the price
-            const priceWithoutGST = item.price / 1.18 // Assuming 18% GST
+            
+            const priceWithoutGST = item.price / 1.18 
             baseAmount += priceWithoutGST
             gst += item.price - priceWithoutGST
           }
         }
       })
 
-      // Multiply by number of days
+      
       baseAmount *= days
       gst *= days
 
@@ -183,11 +196,10 @@ export function CateringPage({ bookingData, onContinue, onBack }) {
     })
   }
 
-  // Helper function to find meal item by ID
-  const findMealItem = (mealType, itemId) => {
+  const findMealItem = (mealType: keyof typeof mealOptions, itemId: string) => {
     const categories = Object.keys(mealOptions[mealType])
     for (const category of categories) {
-      const item = mealOptions[mealType][category].find((i) => i.id === itemId)
+      const item = mealOptions[mealType][category as keyof typeof mealOptions[typeof mealType]].find((i) => i.id === itemId)
       if (item) return item
     }
     return null
@@ -236,7 +248,7 @@ export function CateringPage({ bookingData, onContinue, onBack }) {
                     Please select the meals you would like to have during your stay. The prices shown are per day.
                   </p>
 
-                  {/* Breakfast Section */}
+                  
                   <Card>
                     <CardHeader className="bg-blue-50 py-3">
                       <CardTitle className="text-[#002060] text-lg">Breakfast</CardTitle>
@@ -463,7 +475,6 @@ export function CateringPage({ bookingData, onContinue, onBack }) {
                     </CardContent>
                   </Card>
 
-                  {/* Summary Section */}
                   <Card className="bg-blue-50">
                     <CardContent className="pt-6">
                       <h3 className="font-medium text-[#002060] mb-4">Meal Summary</h3>
@@ -489,7 +500,7 @@ export function CateringPage({ bookingData, onContinue, onBack }) {
                   <Button onClick={onBack} variant="outline" className="border-[#002060] text-[#002060]">
                     Back
                   </Button>
-                  <Button onClick={handleContinue} className="bg-[#002060] hover:bg-[#003090]">
+                  <Button onClick={handleContinue} className="bg-[#002060] hover:bg-[#003090] text-white">
                     Continue to Payment
                   </Button>
                 </div>

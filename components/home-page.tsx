@@ -5,10 +5,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Home, Phone, Mail, Clock, MapPin } from "lucide-react"
 
-export function HomePage({ onNavigate }) {
+interface HomePageProps {
+  onNavigate: (path: string) => void;
+}
+
+export function HomePage({ onNavigate }: HomePageProps) {
   return (
     <div className="container mx-auto px-4 py-12">
-      {/* Hero Section */}
+     
       <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-16">
         <div className="md:w-1/2">
           <h1 className="text-4xl md:text-5xl font-bold text-[#002060] mb-6">Welcome to SAIL Guest House Management</h1>
@@ -36,7 +40,6 @@ export function HomePage({ onNavigate }) {
         </div>
       </div>
 
-      {/* Features Section */}
       <div className="mb-16">
         <h2 className="text-3xl font-bold text-[#002060] mb-8 text-center">Our Guest Houses</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -96,7 +99,6 @@ export function HomePage({ onNavigate }) {
         </div>
       </div>
 
-      {/* How It Works Section */}
       <div className="mb-16">
         <h2 className="text-3xl font-bold text-[#002060] mb-8 text-center">How It Works</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -144,7 +146,7 @@ export function HomePage({ onNavigate }) {
         </div>
       </div>
 
-      {/* Contact Section */}
+      
       <div>
         <h2 className="text-3xl font-bold text-[#002060] mb-8 text-center">Contact Us</h2>
         <div className="bg-[#f0f4fa] rounded-lg p-6">

@@ -12,10 +12,16 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState("bookingFlow")
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [isAdmin, setIsAdmin] = useState(false)
-  const [userData, setUserData] = useState(null)
+  const [userData, setUserData] = useState<{
+    id: string
+    name: string
+    role?: string
+    department?: string
+    designation?: string
+  } | null>(null)
 
-  const handleLogin = (id, isAdminLogin = false) => {
-    // Mock login functionality
+  const handleLogin = (id: string, isAdminLogin = false) => {
+   
     if (isAdminLogin) {
       setIsAdmin(true)
       setUserData({
@@ -24,10 +30,10 @@ export default function Home() {
         role: "Administrator",
       })
     } else {
-      // Mock employee data
+      
       setUserData({
         id: id,
-        name: "John Doe",
+        name: "kalai",
         department: "Steel Production",
         designation: id.startsWith("GM") ? "General Manager" : "Labour",
       })
@@ -43,7 +49,7 @@ export default function Home() {
     setCurrentPage("home")
   }
 
-  const handleNavigation = (page) => {
+  const handleNavigation = (page: string) => {
     setCurrentPage(page)
   }
 
@@ -51,7 +57,6 @@ export default function Home() {
     setCurrentPage("home")
   }
 
-  // Render the current page
   if (currentPage === "bookingFlow") {
     return <BookingFlow onComplete={handleBookingFlowComplete} />
   }

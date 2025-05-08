@@ -10,22 +10,43 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { format } from "date-fns"
 
-export function PaymentPage({ bookingData, onContinue, onBack }) {
+interface BookingData {
+  checkIn: Date;
+  checkOut: Date;
+  bookingCharge: number;
+  meals: {
+    grandTotal: {
+      total: number;
+    };
+  };
+  employeeData: {
+    name: string;
+  };
+  guestHouse: string;
+  room: {
+    number: string;
+  };
+}
+
+interface PaymentPageProps {
+  bookingData: BookingData;
+  onContinue: (data: any) => void;
+  onBack: () => void;
+}
+
+export function PaymentPage({ bookingData, onContinue, onBack }: PaymentPageProps) {
   const [paymentMethod, setPaymentMethod] = useState("card")
   const [showCancellationPolicy, setShowCancellationPolicy] = useState(false)
   const [error, setError] = useState("")
 
-  // Calculate room charges
-  const days = Math.ceil((bookingData.checkOut - bookingData.checkIn) / (1000 * 60 * 60 * 24))
+
+  const days = Math.ceil((bookingData.checkOut.getTime() - bookingData.checkIn.getTime()) / (1000 * 60 * 60 * 24))
   const roomCharges = bookingData.bookingCharge * days
 
-  // Get meal charges from booking data
   const mealCharges = bookingData.meals.grandTotal.total
 
-  // Calculate total
   const totalCharges = roomCharges + mealCharges
 
-  // Calculate advance payment (20% for card payment)
   const advancePayment = paymentMethod === "card" ? totalCharges * 0.2 : 0
 
   const handleContinue = () => {
@@ -165,7 +186,7 @@ export function PaymentPage({ bookingData, onContinue, onBack }) {
                   <Button onClick={onBack} variant="outline" className="border-[#002060] text-[#002060]">
                     Back
                   </Button>
-                  <Button onClick={handleContinue} className="bg-[#002060] hover:bg-[#003090]">
+                  <Button onClick={handleContinue} className="bg-[#002060] hover:bg-[#003090] text-white">
                     Complete Booking
                   </Button>
                 </div>

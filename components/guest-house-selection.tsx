@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { format } from "date-fns"
 
-// Mock room data
+
 const guestHouseData = {
   "Mohan Nagar": {
     duplexAC: [
@@ -51,9 +51,31 @@ const guestHouseData = {
   },
 }
 
-export function GuestHouseSelection({ bookingData, onContinue, onBack }) {
+interface BookingData {
+  employeeData: {
+    name: string;
+  };
+  checkIn: Date;
+  checkOut: Date;
+}
+
+export function GuestHouseSelection({
+  bookingData,
+  onContinue,
+  onBack,
+}: {
+  bookingData: BookingData;
+  onContinue: (data: any) => void;
+  onBack: () => void;
+}) {
   const [selectedGuestHouse, setSelectedGuestHouse] = useState("Mohan Nagar")
-  const [selectedRoom, setSelectedRoom] = useState(null)
+  const [selectedRoom, setSelectedRoom] = useState<{
+    id: string
+    number: string
+    type: string
+    available: boolean
+    amenities: string
+  } | null>(null)
   const [error, setError] = useState("")
 
   const handleContinue = () => {
@@ -69,7 +91,7 @@ export function GuestHouseSelection({ bookingData, onContinue, onBack }) {
     })
   }
 
-  const getStatusColor = (available) => {
+  const getStatusColor = (available: boolean) => {
     return available
       ? "border-green-300 bg-green-50 hover:bg-green-100"
       : "border-red-300 bg-red-50 text-gray-500 opacity-60 cursor-not-allowed"
@@ -116,7 +138,9 @@ export function GuestHouseSelection({ bookingData, onContinue, onBack }) {
                     <Button
                       variant={selectedGuestHouse === "Mohan Nagar" ? "default" : "outline"}
                       className={
-                        selectedGuestHouse === "Mohan Nagar" ? "bg-[#002060]" : "border-[#002060] text-[#002060]"
+                        selectedGuestHouse === "Mohan Nagar" 
+                          ? "bg-[#002060] text-white" 
+                          : "border-[#002060] text-[#002060] hover:bg-[#002060] hover:text-white"
                       }
                       onClick={() => {
                         setSelectedGuestHouse("Mohan Nagar")
@@ -128,7 +152,9 @@ export function GuestHouseSelection({ bookingData, onContinue, onBack }) {
                     <Button
                       variant={selectedGuestHouse === "Steel House" ? "default" : "outline"}
                       className={
-                        selectedGuestHouse === "Steel House" ? "bg-[#002060]" : "border-[#002060] text-[#002060]"
+                        selectedGuestHouse === "Steel House" 
+                          ? "bg-[#002060] text-white" 
+                          : "border-[#002060] text-[#002060] hover:bg-[#002060] hover:text-white"
                       }
                       onClick={() => {
                         setSelectedGuestHouse("Steel House")
@@ -294,7 +320,7 @@ export function GuestHouseSelection({ bookingData, onContinue, onBack }) {
                   <Button onClick={onBack} variant="outline" className="border-[#002060] text-[#002060]">
                     Back
                   </Button>
-                  <Button onClick={handleContinue} className="bg-[#002060] hover:bg-[#003090]" disabled={!selectedRoom}>
+                  <Button onClick={handleContinue} className="bg-[#002060] hover:bg-[#003090] text-white" disabled={!selectedRoom}>
                     Continue to Catering
                   </Button>
                 </div>

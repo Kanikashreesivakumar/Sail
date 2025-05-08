@@ -7,11 +7,11 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
-// Mock room data
+
 const roomData = {
   "Steel House": [
     { id: 1, number: "S101", type: "Suite", status: "available" },
-    { id: 2, number: "S102", type: "Suite", status: "unavailable" },
+    { id: 2, number: "S102", type: "Suite", status: "available" },
     { id: 3, number: "S103", type: "Suite", status: "available" },
     { id: 4, number: "S201", type: "AC", status: "available" },
     { id: 5, number: "S202", type: "AC", status: "maintenance" },
@@ -21,7 +21,7 @@ const roomData = {
   ],
   "Mohan Guest House": [
     { id: 9, number: "M101", type: "AC", status: "available" },
-    { id: 10, number: "M102", type: "AC", status: "unavailable" },
+    { id: 10, number: "M102", type: "AC", status: "available" },
     { id: 11, number: "M103", type: "AC", status: "available" },
     { id: 12, number: "M201", type: "Non-AC", status: "available" },
     { id: 13, number: "M202", type: "Non-AC", status: "maintenance" },
@@ -31,13 +31,22 @@ const roomData = {
   ],
 }
 
-export function RoomBooking({ userData, onSubmit }) {
-  const [selectedGuestHouse, setSelectedGuestHouse] = useState("")
-  const [selectedRoom, setSelectedRoom] = useState(null)
+interface UserData {
+  designation?: string[];
+}
+
+interface RoomBookingProps {
+  userData: UserData;
+  onSubmit: (data: { guestHouse: string; room: any; checkIn: string; checkOut: string; nights: number; rate: number }) => void;
+}
+
+export function RoomBooking({ userData, onSubmit }: RoomBookingProps) {
+  const [selectedGuestHouse, setSelectedGuestHouse] = useState<keyof typeof roomData | "">("")
+  const [selectedRoom, setSelectedRoom] = useState<{ id: number; number: string; type: string; status: string } | null>(null)
   const [checkInDate, setCheckInDate] = useState("")
   const [checkOutDate, setCheckOutDate] = useState("")
 
-  // Determine recommended guest house based on designation
+
   const recommendedGuestHouse =
     userData?.designation?.includes("General Manager") ||
     userData?.designation?.includes("GM") ||
@@ -45,12 +54,12 @@ export function RoomBooking({ userData, onSubmit }) {
       ? "Steel House"
       : "Mohan Guest House"
 
-  const handleGuestHouseChange = (value) => {
+  const handleGuestHouseChange = (value: "" | "Steel House" | "Mohan Guest House") => {
     setSelectedGuestHouse(value)
     setSelectedRoom(null)
   }
 
-  const handleRoomSelect = (room) => {
+  const handleRoomSelect = (room: { id: number; number: string; type: string; status: string }) => {
     if (room.status === "available") {
       setSelectedRoom(room)
     }
@@ -63,15 +72,17 @@ export function RoomBooking({ userData, onSubmit }) {
         room: selectedRoom,
         checkIn: checkInDate,
         checkOut: checkOutDate,
-        // Calculate number of nights
-        nights: Math.ceil((new Date(checkOutDate) - new Date(checkInDate)) / (1000 * 60 * 60 * 24)),
-        // Mock room rates
+      
+        nights: checkOutDate && checkInDate && !isNaN(new Date(checkOutDate).getTime()) && !isNaN(new Date(checkInDate).getTime())
+          ? Math.ceil((new Date(checkOutDate).getTime() - new Date(checkInDate).getTime()) / (1000 * 60 * 60 * 24))
+          : 0,
+        
         rate: selectedRoom.type === "Suite" ? 3000 : selectedRoom.type === "AC" ? 2000 : 1000,
       })
     }
   }
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case "available":
         return "bg-green-100 border-green-300 text-green-800"
@@ -84,7 +95,7 @@ export function RoomBooking({ userData, onSubmit }) {
     }
   }
 
-  const getStatusText = (status) => {
+  const getStatusText = (status: string) => {
     switch (status) {
       case "available":
         return "Available"

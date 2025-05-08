@@ -7,7 +7,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { format, addDays, differenceInHours } from "date-fns"
 
-export function BookingDates({ employeeData, bookingType, bookingCharge, onContinue, onBack }) {
+interface BookingDatesProps {
+  employeeData: { name: string }; 
+  bookingType: string;
+  bookingCharge: number;
+  onContinue: (data: {
+    employeeData: { name: string };
+    bookingType: string;
+    bookingCharge: number;
+    checkIn: Date;
+    checkOut: Date;
+    duration: number;
+  }) => void;
+  onBack: () => void;
+}
+
+export function BookingDates({ employeeData, bookingType, bookingCharge, onContinue, onBack }: BookingDatesProps) {
   const [checkInDate, setCheckInDate] = useState("")
   const [checkInTime, setCheckInTime] = useState("15:00")
   const [checkOutDate, setCheckOutDate] = useState("")
@@ -48,12 +63,11 @@ export function BookingDates({ employeeData, bookingType, bookingCharge, onConti
         bookingCharge,
         checkIn,
         checkOut,
-        duration: Math.ceil(differenceInHours(checkOut, checkIn) / 24), // Duration in days
+        duration: Math.ceil(differenceInHours(checkOut, checkIn) / 24), 
       })
     }
   }
 
-  // Set minimum check-out date to be the day after check-in
   const minCheckOutDate = checkInDate ? format(addDays(new Date(checkInDate), 1), "yyyy-MM-dd") : ""
 
   return (
@@ -92,7 +106,7 @@ export function BookingDates({ employeeData, bookingType, bookingCharge, onConti
                         value={checkInDate}
                         onChange={(e) => {
                           setCheckInDate(e.target.value)
-                          // Clear check-out if it's now invalid
+                          
                           if (checkOutDate && e.target.value > checkOutDate) {
                             setCheckOutDate("")
                           }
@@ -168,7 +182,7 @@ export function BookingDates({ employeeData, bookingType, bookingCharge, onConti
                   <Button onClick={onBack} variant="outline" className="border-[#002060] text-[#002060]">
                     Back
                   </Button>
-                  <Button onClick={handleContinue} className="bg-[#002060] hover:bg-[#003090]">
+                  <Button onClick={handleContinue} className="bg-[#002060] text-white hover:bg-[#003090]">
                     Continue to Guest House Selection
                   </Button>
                 </div>

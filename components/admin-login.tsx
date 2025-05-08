@@ -7,19 +7,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-export function AdminLogin({ onLogin }) {
+interface AdminLoginProps {
+  onLogin: () => void;
+}
+
+export function AdminLogin({ onLogin }: AdminLoginProps) {
   const [adminId, setAdminId] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!adminId || !password) {
       setError("Please enter both Admin ID and Password")
       return
     }
 
-    // Mock validation - in a real app, this would be an API call
+    
     if (adminId === "SAIL_ADMIN" && password === "SAIL@2025") {
       onLogin()
     } else {
@@ -63,7 +67,7 @@ export function AdminLogin({ onLogin }) {
 
               {error && <p className="text-red-500 text-sm">{error}</p>}
 
-              <Button type="submit" className="w-full bg-[#002060] hover:bg-[#003090]">
+              <Button type="submit" className="w-full text-white bg-[#002060] hover:bg-[#003090]">
                 Login
               </Button>
             </form>

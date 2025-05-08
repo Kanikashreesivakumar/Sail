@@ -10,7 +10,6 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Download, Edit, Plus } from "lucide-react"
 
-// Mock room data
 const initialRooms = [
   { id: 1, number: "S101", guestHouse: "Steel House", type: "Suite", status: "available", remarks: "" },
   {
@@ -45,7 +44,14 @@ const initialRooms = [
 
 export function RoomManagement() {
   const [rooms, setRooms] = useState(initialRooms)
-  const [editingRoom, setEditingRoom] = useState(null)
+  const [editingRoom, setEditingRoom] = useState<{
+    id: number
+    number: string
+    guestHouse: string
+    type: string
+    status: string
+    remarks: string
+  } | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [newRoom, setNewRoom] = useState({
     number: "",
@@ -55,15 +61,15 @@ export function RoomManagement() {
     remarks: "",
   })
 
-  const handleStatusChange = (roomId, newStatus) => {
+  const handleStatusChange = (roomId: number, newStatus: string) => {
     setRooms(rooms.map((room) => (room.id === roomId ? { ...room, status: newStatus } : room)))
   }
 
-  const handleRemarksChange = (roomId, remarks) => {
+  const handleRemarksChange = (roomId: number, remarks: string) => {
     setRooms(rooms.map((room) => (room.id === roomId ? { ...room, remarks } : room)))
   }
 
-  const handleEditRoom = (room) => {
+  const handleEditRoom = (room: { id: number; number: string; guestHouse: string; type: string; status: string; remarks: string }) => {
     setEditingRoom(room)
     setIsDialogOpen(true)
   }
@@ -82,16 +88,16 @@ export function RoomManagement() {
 
   const handleSaveRoom = () => {
     if (editingRoom) {
-      // Update existing room
-      setRooms(rooms.map((room) => (room.id === editingRoom.id ? { ...editingRoom } : room)))
+     
+      setRooms(rooms.map((room) => (room.id === editingRoom?.id ? { ...editingRoom! } : room)))
     } else {
-      // Add new room
+      
       setRooms([...rooms, { ...newRoom, id: Date.now() }])
     }
     setIsDialogOpen(false)
   }
 
-  const getStatusBadgeClass = (status) => {
+  const getStatusBadgeClass = (status: string) => {
     switch (status) {
       case "available":
         return "bg-green-100 text-green-800 border-green-200"

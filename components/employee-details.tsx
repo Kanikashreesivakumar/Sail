@@ -10,10 +10,26 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { HelpCircle } from "lucide-react"
 
-export function EmployeeDetails({ onContinue }) {
+interface EmployeeDetailsProps {
+  onContinue: (data: { employeeData: Employee; bookingType: string; bookingCharge: number }) => void;
+}
+
+interface Employee {
+  id: string
+  name: string
+  department: string
+  designation: string
+  aadharId: string
+  phoneNumber: string
+  address: string
+  email: string
+}
+
+export function EmployeeDetails({ onContinue }: EmployeeDetailsProps) {
   const [employeeId, setEmployeeId] = useState("")
   const [bookingType, setBookingType] = useState("personal")
-  const [employeeData, setEmployeeData] = useState(null)
+
+  const [employeeData, setEmployeeData] = useState<Employee | null>(null)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
@@ -26,18 +42,17 @@ export function EmployeeDetails({ onContinue }) {
     setLoading(true)
     setError("")
 
-    // Simulate API call to fetch employee data with more details
     setTimeout(() => {
-      // Enhanced mock employee data
+   
       setEmployeeData({
         id: employeeId,
-        name: "John Doe",
+        name: "kalai",
         department: "Steel Production",
         designation: "Senior Engineer",
         aadharId: "XXXX-XXXX-" + Math.floor(1000 + Math.random() * 9000),
         phoneNumber: "+91 " + Math.floor(7000000000 + Math.random() * 2999999999),
         address: "123, SAIL Colony, Sector 5, Steel City - 834002",
-        email: `john.doe${employeeId}@sail.in`,
+        email: `kalai${employeeId}@sail.in`,
       })
       setLoading(false)
     }, 1000)
@@ -91,7 +106,7 @@ export function EmployeeDetails({ onContinue }) {
                     </div>
                     <Button
                       onClick={handleFetchEmployee}
-                      className="bg-[#002060] hover:bg-[#003090]"
+                      className="bg-[#002060] text-white hover:bg-[#003090]"
                       disabled={loading}
                     >
                       {loading ? "Fetching..." : "Fetch Details"}
@@ -152,9 +167,9 @@ export function EmployeeDetails({ onContinue }) {
                         </TooltipTrigger>
                         <TooltipContent>
                           <p className="max-w-xs">
-                            Personal Booking: For personal use (₹2000)
+                            Personal Booking: For personal use 
                             <br />
-                            Official Booking: For official purposes (₹2500)
+                            Official Booking: For official purposes 
                           </p>
                         </TooltipContent>
                       </Tooltip>
@@ -164,18 +179,18 @@ export function EmployeeDetails({ onContinue }) {
                   <RadioGroup value={bookingType} onValueChange={setBookingType}>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="personal" id="personal" />
-                      <Label htmlFor="personal">Personal Booking - ₹2000</Label>
+                      <Label htmlFor="personal">Personal Booking </Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="official" id="official" />
-                      <Label htmlFor="official">Official Booking - ₹2500</Label>
+                      <Label htmlFor="official">Official Booking</Label>
                     </div>
                   </RadioGroup>
                 </div>
 
                 <Button
                   onClick={handleContinue}
-                  className="w-full bg-[#002060] hover:bg-[#003090]"
+                  className="w-full bg-[#002060] text-white hover:bg-[#003090]"
                   disabled={!employeeData}
                 >
                   Continue to Booking

@@ -1,8 +1,15 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
-export function EmployeeProfile({ userData }) {
-  // Determine recommended guest house based on designation
+interface UserData {
+  name?: string;
+  id?: string;
+  department?: string;
+  designation?: string;
+}
+
+export function EmployeeProfile({ userData }: { userData: UserData }) {
+ 
   const recommendedGuestHouse =
     userData?.designation?.includes("General Manager") ||
     userData?.designation?.includes("GM") ||
@@ -10,16 +17,16 @@ export function EmployeeProfile({ userData }) {
       ? "Steel House"
       : "Mohan Guest House"
 
-  // Mock extended employee data
+
   const extendedData = {
     personalInfo: {
-      fullName: userData?.name || "John Doe",
+      fullName: userData?.name || "kalai",
       employeeId: userData?.id || "EMP12345",
       department: userData?.department || "Steel Production",
       designation: userData?.designation || "Engineer",
       dateOfJoining: "15-06-2010",
       contactNumber: "+91 9876543210",
-      emailId: "john.doe@sail.in",
+      emailId: "kalai@sail.in",
       bloodGroup: "O+",
       emergencyContact: "+91 9876543211",
     },

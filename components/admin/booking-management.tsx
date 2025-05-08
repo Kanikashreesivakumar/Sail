@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 
-// Mock booking data
 const bookingsData = [
   {
     id: "B001",
@@ -98,7 +97,7 @@ export function BookingManagement() {
   const [statusFilter, setStatusFilter] = useState("all")
   const [guestHouseFilter, setGuestHouseFilter] = useState("all")
 
-  // Filter bookings based on search term and filters
+ 
   const filteredBookings = bookingsData.filter((booking) => {
     const matchesSearch =
       booking.employeeName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -111,7 +110,7 @@ export function BookingManagement() {
     return matchesSearch && matchesStatus && matchesGuestHouse
   })
 
-  const getStatusBadgeClass = (status) => {
+  const getStatusBadgeClass = (status: string) => {
     switch (status) {
       case "paid":
         return "bg-green-100 text-green-800 hover:bg-green-100"

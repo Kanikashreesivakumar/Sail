@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
 
-// Mock data for room availability
+
 const roomData = {
   steelHouse: {
     suites: [
@@ -16,7 +16,7 @@ const roomData = {
     ],
     rooms: [
       { id: "S-101", type: "AC", number: "101", available: true },
-      { id: "S-102", type: "AC", number: "102", available: false },
+      { id: "S-102", type: "AC", number: "102", available: true },
       { id: "S-103", type: "AC", number: "103", available: true },
       { id: "S-104", type: "Non-AC", number: "104", available: true },
       { id: "S-105", type: "Non-AC", number: "105", available: false },
@@ -40,12 +40,14 @@ const roomData = {
 
 export function RoomAvailability() {
   const [selectedHouse, setSelectedHouse] = useState("steelHouse")
-  const [selectedRoom, setSelectedRoom] = useState(null)
+  const [selectedRoom, setSelectedRoom] = useState<{ id: string; type: string; number: string; available: boolean } | null>(null)
   const [bookingDates, setBookingDates] = useState({ checkIn: "", checkOut: "" })
 
   const handleBookRoom = () => {
-    // In a real app, this would make an API call to book the room
-    alert(`Room ${selectedRoom.number} booked successfully!`)
+    
+    if (selectedRoom) {
+      alert(`Room ${selectedRoom.number} booked successfully!`)
+    }
     setSelectedRoom(null)
   }
 
@@ -149,7 +151,7 @@ export function RoomAvailability() {
   )
 }
 
-function RoomCard({ room, onSelect }) {
+function RoomCard({ room, onSelect }: { room: { id: string; type: string; number: string; available: boolean }; onSelect: (room: { id: string; type: string; number: string; available: boolean }) => void }) {
   return (
     <div
       className={`p-2 border rounded-md text-center cursor-pointer transition-colors ${

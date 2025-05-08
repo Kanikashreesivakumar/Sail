@@ -7,14 +7,35 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Check, Download } from "lucide-react"
 
-export function PaymentPage({ bookingData, mealData }) {
+interface BookingData {
+  rate: number;
+  nights: number;
+  guestHouse: string;
+  room: {
+    number: string;
+    type: string;
+  };
+  checkIn: string;
+  checkOut: string;
+}
+
+interface MealItem {
+  id: string;
+  name: string;
+  price: number;
+}
+
+interface MealData {
+  [mealType: string]: MealItem[];
+}
+
+export function PaymentPage({ bookingData, mealData }: { bookingData: BookingData; mealData: MealData }) {
   const [paymentMethod, setPaymentMethod] = useState("upi")
   const [paymentComplete, setPaymentComplete] = useState(false)
 
-  // Calculate room charges
+
   const roomTotal = bookingData ? bookingData.rate * bookingData.nights : 0
 
-  // Calculate meal charges
   const calculateMealTotal = () => {
     if (!mealData) return 0
 
@@ -32,7 +53,7 @@ export function PaymentPage({ bookingData, mealData }) {
   const grandTotal = roomTotal + mealTotal
 
   const handlePayment = () => {
-    // In a real app, this would process the payment
+
     setPaymentComplete(true)
   }
 
@@ -222,7 +243,7 @@ export function PaymentPage({ bookingData, mealData }) {
                 </div>
               </div>
 
-              <Button className="bg-[#002060] hover:bg-[#003090]">
+              <Button className="bg-[#002060] hover:bg-[#003090] text-white">
                 <Download className="mr-2" size={16} />
                 Download Receipt
               </Button>

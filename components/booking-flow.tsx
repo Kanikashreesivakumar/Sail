@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import { LoadingPage } from "./loading-page"
+import { Employee } from "../models/employee" 
 import { HeroPage } from "./hero-page"
 import { AdminLogin } from "./admin-login"
 import { EmployeeDetails } from "./employee-details"
@@ -11,81 +12,118 @@ import { CateringPage } from "./catering-page"
 import { PaymentPage } from "./payment-page"
 import { ConfirmationPage } from "./confirmation-page"
 
-export function BookingFlow({ onComplete }) {
-  const [currentStep, setCurrentStep] = useState("loading")
-  const [bookingData, setBookingData] = useState({})
+interface BookingFlowProps {
+  onComplete: () => void;
+}
 
-  // Handle loading completion
+export function BookingFlow({ onComplete }: BookingFlowProps) {
+  const [currentStep, setCurrentStep] = useState("loading")
+  interface LocalBookingData {
+    employeeData?: Employee;
+    bookingType?: string;
+    bookingCharge?: number;
+    startDate?: string;
+    endDate?: string;
+    guestHouseId?: string;
+    guestHouseName?: string;
+    cateringDetails?: string;
+    paymentDetails?: string;
+    checkIn?: string;
+    checkOut?: string;
+    meals?: string; 
+    guestHouse?: string; 
+    room?: string; 
+  }
+
+  interface BookingData {
+    checkIn?: Date;
+    checkOut?: Date;
+    bookingCharge: number;
+    meals: {
+      grandTotal: {
+        total: number;
+      };
+    };
+    employeeData: {
+      name: string;
+    };
+    guestHouse: string;
+    room: {
+      number: string;
+    };
+  }
+
+  const [bookingData, setBookingData] = useState<LocalBookingData>({})
+
+  
   const handleLoadingComplete = () => {
     setCurrentStep("hero")
   }
 
-  // Handle hero page proceed button
+
   const handleHeroProceed = () => {
     setCurrentStep("adminLogin")
   }
 
-  // Handle admin login
+  
   const handleAdminLogin = () => {
     setCurrentStep("employeeDetails")
   }
 
-  // Handle employee details submission
-  const handleEmployeeDetailsSubmit = (data) => {
+  const handleEmployeeDetailsSubmit = (data: { employeeData: Employee; bookingType: string; bookingCharge: number }) => {
     setBookingData(data)
     setCurrentStep("bookingDates")
   }
 
-  // Handle booking dates submission
-  const handleBookingDatesSubmit = (data) => {
-    setBookingData(data)
-    setCurrentStep("guestHouseSelection")
+  const handleBookingDatesSubmit = (data: { employeeData: { name: string }; bookingType: string; bookingCharge: number; checkIn: Date; checkOut: Date; duration: number }) => {
+      setBookingData({
+          employeeData: data.employeeData,
+          bookingType: data.bookingType,
+          bookingCharge: data.bookingCharge,
+          startDate: data.checkIn.toISOString(),
+          endDate: data.checkOut.toISOString(),
+      })
+      setCurrentStep("guestHouseSelection")
   }
 
-  // Handle guest house selection
-  const handleGuestHouseSubmit = (data) => {
+ 
+  const handleGuestHouseSubmit = (data: { guestHouseId: string; guestHouseName: string }) => {
     setBookingData(data)
     setCurrentStep("catering")
   }
 
-  // Handle catering selection
-  const handleCateringSubmit = (data) => {
+  
+  const handleCateringSubmit = (data: { cateringDetails: string }) => {
     setBookingData(data)
     setCurrentStep("payment")
   }
 
-  // Handle payment completion
-  const handlePaymentComplete = (data) => {
+  
+  const handlePaymentComplete = (data: { paymentDetails: string }) => {
     setBookingData(data)
     setCurrentStep("confirmation")
   }
 
-  // Handle back button in booking dates
   const handleBookingDatesBack = () => {
     setCurrentStep("employeeDetails")
   }
 
-  // Handle back button in guest house selection
   const handleGuestHouseBack = () => {
     setCurrentStep("bookingDates")
   }
 
-  // Handle back button in catering
   const handleCateringBack = () => {
     setCurrentStep("guestHouseSelection")
   }
-
-  // Handle back button in payment
   const handlePaymentBack = () => {
     setCurrentStep("catering")
   }
 
-  // Handle booking completion
   const handleBookingComplete = () => {
     onComplete()
   }
 
-  // Render the current step
+  
   switch (currentStep) {
     case "loading":
       return <LoadingPage onComplete={handleLoadingComplete} />
@@ -103,8 +141,8 @@ export function BookingFlow({ onComplete }) {
       return (
         <BookingDates
           employeeData={bookingData.employeeData}
-          bookingType={bookingData.bookingType}
-          bookingCharge={bookingData.bookingCharge}
+          bookingType={bookingData.bookingType || ""}
+          bookingCharge={bookingData.bookingCharge || 0}
           onContinue={handleBookingDatesSubmit}
           onBack={handleBookingDatesBack}
         />
@@ -113,7 +151,17 @@ export function BookingFlow({ onComplete }) {
     case "guestHouseSelection":
       return (
         <GuestHouseSelection
-          bookingData={bookingData}
+          bookingData={{
+            ...bookingData,
+            checkIn: bookingData.startDate ? new Date(bookingData.startDate) : new Date(),
+            checkOut: bookingData.endDate ? new Date(bookingData.endDate) : new Date(),
+            meals: bookingData.meals
+              ? { grandTotal: { total: parseFloat(bookingData.meals) } }
+              : undefined,
+            room: bookingData.room
+              ? { number: bookingData.room }
+              : undefined,
+          } as BookingData}
           onContinue={handleGuestHouseSubmit}
           onBack={handleGuestHouseBack}
         />
@@ -123,7 +171,18 @@ export function BookingFlow({ onComplete }) {
       return <CateringPage bookingData={bookingData} onContinue={handleCateringSubmit} onBack={handleGuestHouseBack} />
 
     case "payment":
-      return <PaymentPage bookingData={bookingData} onContinue={handlePaymentComplete} onBack={handlePaymentBack} />
+      return (
+        <PaymentPage
+          bookingData={{
+            ...bookingData,
+            bookingCharge: bookingData.bookingCharge || 0,
+            checkIn: bookingData.checkIn ? new Date(bookingData.checkIn) : new Date(),
+            checkOut: bookingData.checkOut ? new Date(bookingData.checkOut) : new Date(),
+          }}
+          onContinue={handlePaymentComplete}
+          onBack={handlePaymentBack}
+        />
+      )
 
     case "confirmation":
       return <ConfirmationPage bookingData={bookingData} onDone={handleBookingComplete} />
