@@ -197,23 +197,25 @@ export function PaymentPage({ bookingData, onContinue, onBack }: PaymentPageProp
       </main>
 
       <Dialog open={showCancellationPolicy} onOpenChange={setShowCancellationPolicy}>
-        <DialogContent>
+        <DialogContent className="bg-white text-black">
           <DialogHeader>
-            <DialogTitle>Cancellation Policy</DialogTitle>
-            <DialogDescription>Please review our cancellation policy before confirming your booking.</DialogDescription>
+            <DialogTitle className="text-black">Cancellation Policy</DialogTitle>
+            <DialogDescription className="text-black">
+              Please review our cancellation policy before confirming your booking.
+            </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <h4 className="font-medium">Cancellation Charges:</h4>
-              <ul className="list-disc pl-5 mt-2 space-y-2">
+              <h4 className="font-medium text-black bg-white p-2 rounded">Cancellation Charges:</h4>
+              <ul className="list-disc pl-5 mt-2 space-y-2 text-black">
                 <li>Cancellation 1 month before check-in: 100% refund</li>
                 <li>Cancellation 1 week before check-in: 75% refund (25% deduction)</li>
                 <li>Cancellation less than 1 week before check-in: No refund (100% deduction)</li>
               </ul>
             </div>
             <div>
-              <h4 className="font-medium">Important Notes:</h4>
-              <ul className="list-disc pl-5 mt-2 space-y-2">
+              <h4 className="font-medium text-black bg-white p-2 rounded">Important Notes:</h4>
+              <ul className="list-disc pl-5 mt-2 space-y-2 text-black">
                 <li>All cancellations must be made in writing through the system</li>
                 <li>Refunds will be processed within 7-10 working days</li>
                 <li>For salary deduction bookings, the applicable amount will be adjusted in your salary</li>
