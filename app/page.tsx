@@ -146,11 +146,7 @@ export default function Home() {
           </div>
         )}
 
-        {currentPage === "employee" && isLoggedIn && !isAdmin && <EmployeeDashboard userData={userData} />}
-
-        {currentPage === "admin" && isLoggedIn && isAdmin && userData && <AdminDashboard userData={userData} />}
-
-        {currentPage === "about" && <AboutPage />}
+       
       </main>
 
       <footer className="bg-gray-100 py-4 border-t">
