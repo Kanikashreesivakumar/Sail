@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 
-// Mock food menu data
+
 const menuData = {
   breakfast: [
     { id: "b1", name: "Idli Sambar", price: 80 },
@@ -34,14 +34,26 @@ const menuData = {
   ],
 }
 
-export function FoodMenu({ onSubmit }) {
-  const [selectedItems, setSelectedItems] = useState({
+interface FoodMenuProps {
+  onSubmit: (selectedMeals: {
+    breakfast: { id: string; name: string; price: number }[];
+    lunch: { id: string; name: string; price: number }[];
+    dinner: { id: string; name: string; price: number }[];
+  }) => void;
+}
+
+export function FoodMenu({ onSubmit }: FoodMenuProps) {
+  const [selectedItems, setSelectedItems] = useState<{
+    breakfast: string[];
+    lunch: string[];
+    dinner: string[];
+  }>({
     breakfast: [],
     lunch: [],
     dinner: [],
   })
 
-  const handleItemToggle = (mealType, itemId) => {
+  const handleItemToggle = (mealType: keyof typeof menuData, itemId: string) => {
     setSelectedItems((prev) => {
       const currentSelection = [...prev[mealType]]
 
@@ -60,7 +72,7 @@ export function FoodMenu({ onSubmit }) {
   }
 
   const handleSubmit = () => {
-    // Convert selected IDs to actual meal objects with prices
+    
     const selectedMeals = {
       breakfast: menuData.breakfast.filter((item) => selectedItems.breakfast.includes(item.id)),
       lunch: menuData.lunch.filter((item) => selectedItems.lunch.includes(item.id)),
@@ -70,14 +82,14 @@ export function FoodMenu({ onSubmit }) {
     onSubmit(selectedMeals)
   }
 
-  const getTotalPrice = (mealType) => {
+  const getTotalPrice = (mealType: keyof typeof menuData) => {
     return menuData[mealType]
       .filter((item) => selectedItems[mealType].includes(item.id))
       .reduce((sum, item) => sum + item.price, 0)
   }
 
   const getOverallTotal = () => {
-    return Object.keys(selectedItems).reduce((sum, mealType) => sum + getTotalPrice(mealType), 0)
+    return Object.keys(selectedItems).reduce((sum, mealType) => sum + getTotalPrice(mealType as keyof typeof menuData), 0)
   }
 
   return (
@@ -92,7 +104,7 @@ export function FoodMenu({ onSubmit }) {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Breakfast Card */}
+            
             <Card>
               <CardHeader className="bg-blue-50 py-3">
                 <CardTitle className="text-[#002060] text-lg">Breakfast</CardTitle>
@@ -121,7 +133,7 @@ export function FoodMenu({ onSubmit }) {
               </CardContent>
             </Card>
 
-            {/* Lunch Card */}
+            
             <Card>
               <CardHeader className="bg-blue-50 py-3">
                 <CardTitle className="text-[#002060] text-lg">Lunch</CardTitle>
@@ -150,7 +162,7 @@ export function FoodMenu({ onSubmit }) {
               </CardContent>
             </Card>
 
-            {/* Dinner Card */}
+          
             <Card>
               <CardHeader className="bg-blue-50 py-3">
                 <CardTitle className="text-[#002060] text-lg">Dinner</CardTitle>

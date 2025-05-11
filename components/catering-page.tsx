@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 
-// Mock meal data
 const mealOptions = {
   breakfast: {
     veg: [
@@ -330,7 +329,6 @@ export function CateringPage({ bookingData, onContinue, onBack }: { bookingData:
                     </CardContent>
                   </Card>
 
-                  {/* Lunch Section */}
                   <Card>
                     <CardHeader className="bg-blue-50 py-3">
                       <CardTitle className="text-[#002060] text-lg">Lunch</CardTitle>
@@ -393,7 +391,6 @@ export function CateringPage({ bookingData, onContinue, onBack }: { bookingData:
                     </CardContent>
                   </Card>
 
-                  {/* Dinner Section */}
                   <Card>
                     <CardHeader className="bg-blue-50 py-3">
                       <CardTitle className="text-[#002060] text-lg">Dinner</CardTitle>

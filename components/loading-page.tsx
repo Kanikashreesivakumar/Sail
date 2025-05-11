@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react"
 import Image from "next/image"
 
-export function LoadingPage({ onComplete }) {
+interface LoadingPageProps {
+  onComplete: () => void;
+}
+
+export function LoadingPage({ onComplete }: LoadingPageProps) {
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
@@ -16,7 +20,7 @@ export function LoadingPage({ onComplete }) {
           }, 500)
           return 100
         }
-        return prev + 4 // Increase by 4% each time to complete in ~2.5s
+        return prev + 4 
       })
     }, 100)
 

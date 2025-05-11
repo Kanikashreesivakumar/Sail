@@ -17,8 +17,26 @@ export default function Home() {
     name: string
     role?: string
     department?: string
+    aadharId?: string
+    phoneNumber?: string
+    address?: string
+    email?: string
     designation?: string
   } | null>(null)
+
+  interface BookingData {
+    meals?: {
+      selectedMeals?: {
+        [key: string]: string[]
+      }
+    }
+  }
+  
+  const [bookingData, setBookingData] = useState<BookingData>({
+    meals: {
+      selectedMeals: {}
+    }
+  });
 
   const handleLogin = (id: string, isAdminLogin = false) => {
    
@@ -131,7 +149,7 @@ export default function Home() {
 
         {currentPage === "employee" && isLoggedIn && !isAdmin && <EmployeeDashboard userData={userData} />}
 
-        {currentPage === "admin" && isLoggedIn && isAdmin && <AdminDashboard userData={userData} />}
+        {currentPage === "admin" && isLoggedIn && isAdmin && userData && <AdminDashboard userData={userData} />}
 
         {currentPage === "about" && <AboutPage />}
       </main>

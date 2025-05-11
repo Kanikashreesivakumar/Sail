@@ -1,29 +1,63 @@
 "use client"
 
 import { useState } from "react"
+
+interface MealItem {
+  id: string;
+  name: string;
+  price: number;
+}
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { EmployeeProfile } from "./profile"
 import { RoomBooking } from "./room-booking"
 import { FoodMenu } from "./food-menu"
 import { PaymentPage } from "./payment"
 
-export function EmployeeDashboard({ userData }) {
+import { UserData } from "@/types/user";
+
+interface RoomBookingProps {
+  userData: UserData;
+  onSubmit: (data: { guestHouse: string; room: any; checkIn: string; checkOut: string; nights: number; rate: number }) => void;
+}
+
+interface EmployeeDashboardProps {
+  userData: UserData;
+}
+
+export function EmployeeDashboard({ userData }: EmployeeDashboardProps) {
   const [activeTab, setActiveTab] = useState("profile")
-  const [bookingData, setBookingData] = useState(null)
-  const [selectedMeals, setSelectedMeals] = useState({
+  interface BookingData {
+    guestHouse: string;
+    room: any;
+    checkIn: string;
+    checkOut: string;
+    nights: number;
+    rate: number;
+  }
+
+  const [bookingData, setBookingData] = useState<BookingData | null>(null)
+  const [selectedMeals, setSelectedMeals] = useState<{
+    breakfast: MealItem[];
+    lunch: MealItem[];
+    dinner: MealItem[];
+  }>({
     breakfast: [],
     lunch: [],
     dinner: [],
   })
 
-  const handleBookingSubmit = (data) => {
+  const handleBookingSubmit = (data: any) => {
     setBookingData(data)
     setActiveTab("food")
   }
 
-  const handleMealSelection = (meals) => {
-    setSelectedMeals(meals)
-    setActiveTab("payment")
+  const handleMealSelection = (selectedMeals: {
+    breakfast: { id: string; name: string; price: number }[];
+    lunch: { id: string; name: string; price: number }[];
+    dinner: { id: string; name: string; price: number }[];
+  }) => {
+    setSelectedMeals(selectedMeals);
+    setActiveTab("payment");
   }
 
   return (
@@ -51,7 +85,7 @@ export function EmployeeDashboard({ userData }) {
         </TabsContent>
 
         <TabsContent value="payment">
-          <PaymentPage bookingData={bookingData} mealData={selectedMeals} />
+          {bookingData && <PaymentPage bookingData={bookingData} mealData={selectedMeals} />}
         </TabsContent>
       </Tabs>
     </div>

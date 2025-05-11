@@ -7,51 +7,86 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Check, Download, Printer } from "lucide-react"
 import { format } from "date-fns"
 
-export function ConfirmationPage({ bookingData, onDone }) {
-  const receiptRef = useRef()
+interface BookingData {
+  checkIn: Date;
+  checkOut: Date;
+  bookingType: "personal" | "official";
+  employeeData: {
+    name: string;
+    id: string;
+    department: string;
+    designation: string;
+  };
+  guestHouse: string;
+  room: {
+    number: string;
+    type: string;
+  };
+  meals: {
+    selectedMeals: Record<string, number[]>;
+  };
+  payment: {
+    method: "card" | "salary";
+    roomCharges: number;
+    mealCharges: number;
+    totalCharges: number;
+    advancePayment?: number;
+    remainingPayment?: number;
+  };
+}
 
-  // Generate a random booking ID
+export function ConfirmationPage({
+  bookingData,
+  onDone,
+}: {
+  bookingData: BookingData;
+  onDone: () => void;
+}) {
+  const receiptRef = useRef<HTMLDivElement | null>(null)
+
+
   const bookingId = `SAIL${Math.floor(Math.random() * 10000)
     .toString()
     .padStart(4, "0")}`
 
-  // Calculate room charges
-  const days = Math.ceil((bookingData.checkOut - bookingData.checkIn) / (1000 * 60 * 60 * 24))
+  const days = Math.ceil((bookingData.checkOut.getTime() - bookingData.checkIn.getTime()) / (1000 * 60 * 60 * 24))
 
-  // Helper function to find meal item by ID
-  const findMealItem = (mealType, itemId) => {
-    // This is a simplified version since we don't have the full meal data structure here
-    // In a real app, you would have access to the full meal data
+ 
+  const findMealItem = (mealType: string, itemId: number) => {
+    
     return { name: `Meal Item ${itemId}`, price: 0 }
   }
 
-  // Get selected meals
-  const getSelectedMeals = () => {
-    const meals = []
 
+  const getSelectedMeals = (bookingData: BookingData) => {
+    const meals: { type: string; id: number }[] = [];
+  
+    if (!bookingData?.meals?.selectedMeals) {
+      return meals;
+    }
+  
     for (const mealType of Object.keys(bookingData.meals.selectedMeals)) {
       for (const itemId of bookingData.meals.selectedMeals[mealType]) {
-        // In a real app, you would use the findMealItem function to get the actual meal details
         meals.push({
           type: mealType.charAt(0).toUpperCase() + mealType.slice(1),
           id: itemId,
-        })
+        });
       }
     }
+  
+    return meals;
+  };
 
-    return meals
-  }
-
-  // Handle print functionality without the library
   const handlePrint = () => {
-    const printContent = document.getElementById("receipt-content").innerHTML
+    const receiptElement = document.getElementById("receipt-content")
+    const printContent = receiptElement ? receiptElement.innerHTML : ""
     const originalContent = document.body.innerHTML
 
     document.body.innerHTML = printContent
     window.print()
     document.body.innerHTML = originalContent
 
-    // Reload the page to restore React functionality
+   
     window.location.reload()
   }
 
@@ -165,9 +200,9 @@ export function ConfirmationPage({ bookingData, onDone }) {
 
                 <div className="border-b pb-4 mb-4">
                   <h4 className="font-medium mb-2">Selected Meals</h4>
-                  {getSelectedMeals().length > 0 ? (
+                  {getSelectedMeals(bookingData).length > 0 ? (
                     <ul className="list-disc pl-5 text-sm space-y-1">
-                      {getSelectedMeals().map((meal, index) => (
+                      {getSelectedMeals(bookingData).map((meal, index) => (
                         <li key={index}>
                           {meal.type}: {meal.id}
                         </li>
@@ -203,11 +238,11 @@ export function ConfirmationPage({ bookingData, onDone }) {
                       <>
                         <div>
                           <span className="text-gray-600">Advance Payment:</span>
-                          <span className="font-medium ml-2">₹{bookingData.payment.advancePayment.toFixed(2)}</span>
+                          <span className="font-medium ml-2">₹{bookingData.payment.advancePayment?.toFixed(2) || "0.00"}</span>
                         </div>
                         <div>
                           <span className="text-gray-600">Remaining Payment:</span>
-                          <span className="font-medium ml-2">₹{bookingData.payment.remainingPayment.toFixed(2)}</span>
+                          <span className="font-medium ml-2">₹{bookingData.payment.remainingPayment?.toFixed(2) ?? "0.00"}</span>
                         </div>
                       </>
                     )}
@@ -227,17 +262,14 @@ export function ConfirmationPage({ bookingData, onDone }) {
                   <Printer className="mr-2" size={16} />
                   Print Receipt
                 </Button>
-                <Button onClick={handlePrint} className="bg-[#002060] hover:bg-[#003090] flex items-center">
+                <Button onClick={handlePrint} className="bg-[#002060] hover:bg-[#003090] flex items-center text-white">
                   <Download className="mr-2" size={16} />
                   Download Receipt
                 </Button>
               </div>
 
-              <div className="text-center mt-8">
-                <Button onClick={onDone} variant="link" className="text-[#002060]">
-                  Return to Home
-                </Button>
-              </div>
+             
+              
             </CardContent>
           </Card>
         </div>

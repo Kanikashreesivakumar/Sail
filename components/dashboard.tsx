@@ -3,7 +3,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { RoomAvailability } from "@/components/room-availability"
 import { PaymentDetails } from "@/components/payment-details"
 
-export function Dashboard({ employeeData }) {
+interface EmployeeData {
+  name: string;
+  department: string;
+  id: string | number;
+  salary: number;
+  roomBookings: {
+    date: string;
+    house: string;
+    roomType: string;
+    roomNumber: string;
+    deduction: number;
+  }[];
+}
+
+export function Dashboard({ employeeData }: { employeeData: EmployeeData }) {
   return (
     <div className="space-y-8">
       <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">

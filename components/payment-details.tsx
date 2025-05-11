@@ -1,8 +1,19 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
-export function PaymentDetails({ employeeData }) {
-  // Calculate total deductions
+interface EmployeeData {
+  salary: number;
+  roomBookings: {
+    date: string;
+    house: string;
+    roomType: string;
+    roomNumber: string;
+    deduction: number;
+  }[];
+}
+
+export function PaymentDetails({ employeeData }: { employeeData: EmployeeData }) {
+
   const totalDeductions = employeeData.roomBookings.reduce((total, booking) => total + booking.deduction, 0)
   const remainingSalary = employeeData.salary - totalDeductions
 

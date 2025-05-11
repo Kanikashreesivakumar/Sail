@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { Edit, Plus, Upload } from "lucide-react"
 
-// Mock food menu data
+
 const initialMenuItems = {
   breakfast: [
     { id: "b1", name: "Idli Sambar", price: 80, available: true },
@@ -42,8 +42,14 @@ const initialMenuItems = {
 
 export function FoodCatering() {
   const [menuItems, setMenuItems] = useState(initialMenuItems)
-  const [activeTab, setActiveTab] = useState("breakfast")
-  const [editingItem, setEditingItem] = useState(null)
+  const [activeTab, setActiveTab] = useState<keyof typeof menuItems>("breakfast")
+  const [editingItem, setEditingItem] = useState<{
+    id: string
+    name: string
+    price: number
+    available: boolean
+    mealType: keyof typeof menuItems
+  } | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [newItem, setNewItem] = useState({
     name: "",
@@ -51,7 +57,7 @@ export function FoodCatering() {
     available: true,
   })
 
-  const handleAvailabilityToggle = (mealType, itemId) => {
+  const handleAvailabilityToggle = (mealType: keyof typeof menuItems, itemId: string) => {
     setMenuItems({
       ...menuItems,
       [mealType]: menuItems[mealType].map((item) =>
@@ -60,7 +66,7 @@ export function FoodCatering() {
     })
   }
 
-  const handleEditItem = (item, mealType) => {
+  const handleEditItem = (item: { id: string; name: string; price: number; available: boolean }, mealType: keyof typeof menuItems) => {
     setEditingItem({ ...item, mealType })
     setIsDialogOpen(true)
   }
@@ -77,14 +83,13 @@ export function FoodCatering() {
 
   const handleSaveItem = () => {
     if (editingItem) {
-      // Update existing item
+      
       const { mealType, ...itemData } = editingItem
       setMenuItems({
         ...menuItems,
         [mealType]: menuItems[mealType].map((item) => (item.id === itemData.id ? itemData : item)),
       })
     } else {
-      // Add new item
       const newId = `${activeTab[0]}${Date.now()}`
       setMenuItems({
         ...menuItems,
@@ -115,7 +120,7 @@ export function FoodCatering() {
           <CardTitle className="text-[#002060]">Food Menu</CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
-          <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as keyof typeof menuItems)}>
             <TabsList className="grid w-full grid-cols-3 mb-6">
               <TabsTrigger value="breakfast">Breakfast</TabsTrigger>
               <TabsTrigger value="lunch">Lunch</TabsTrigger>
@@ -125,24 +130,24 @@ export function FoodCatering() {
             <TabsContent value="breakfast">
               <MenuTable
                 items={menuItems.breakfast}
-                onToggleAvailability={(itemId) => handleAvailabilityToggle("breakfast", itemId)}
-                onEditItem={(item) => handleEditItem(item, "breakfast")}
+                onToggleAvailability={(itemId: string) => handleAvailabilityToggle("breakfast", itemId)}
+                onEditItem={(item: { id: string; name: string; price: number; available: boolean }) => handleEditItem(item, "breakfast")}
               />
             </TabsContent>
 
             <TabsContent value="lunch">
               <MenuTable
                 items={menuItems.lunch}
-                onToggleAvailability={(itemId) => handleAvailabilityToggle("lunch", itemId)}
-                onEditItem={(item) => handleEditItem(item, "lunch")}
+                onToggleAvailability={(itemId: string) => handleAvailabilityToggle("lunch", itemId)}
+                onEditItem={(item: { id: string; name: string; price: number; available: boolean }) => handleEditItem(item, "lunch")}
               />
             </TabsContent>
 
             <TabsContent value="dinner">
               <MenuTable
                 items={menuItems.dinner}
-                onToggleAvailability={(itemId) => handleAvailabilityToggle("dinner", itemId)}
-                onEditItem={(item) => handleEditItem(item, "dinner")}
+                onToggleAvailability={(itemId: string) => handleAvailabilityToggle("dinner", itemId)}
+                onEditItem={(item: { id: string; name: string; price: number; available: boolean }) => handleEditItem(item, "dinner")}
               />
             </TabsContent>
           </Tabs>
@@ -179,7 +184,7 @@ export function FoodCatering() {
                   if (editingItem) {
                     setEditingItem({ ...editingItem, price: Number.parseInt(e.target.value) || 0 })
                   } else {
-                    setNewItem({ ...newItem, price: Number.parseInt(e.target.value) || 0 })
+                    setNewItem({ ...newItem, price: (Number.parseInt(e.target.value) || 0).toString() })
                   }
                 }}
               />
@@ -201,7 +206,7 @@ export function FoodCatering() {
             {!editingItem && (
               <div className="space-y-2">
                 <Label htmlFor="meal-type">Meal Type</Label>
-                <Select value={activeTab} onValueChange={setActiveTab}>
+                <Select value={activeTab} onValueChange={(value) => setActiveTab(value as keyof typeof menuItems)}>
                   <SelectTrigger id="meal-type">
                     <SelectValue />
                   </SelectTrigger>
@@ -228,7 +233,15 @@ export function FoodCatering() {
   )
 }
 
-function MenuTable({ items, onToggleAvailability, onEditItem }) {
+function MenuTable({
+  items,
+  onToggleAvailability,
+  onEditItem,
+}: {
+  items: { id: string; name: string; price: number; available: boolean }[]
+  onToggleAvailability: (itemId: string) => void
+  onEditItem: (item: { id: string; name: string; price: number; available: boolean }) => void
+}) {
   return (
     <Table>
       <TableHeader>

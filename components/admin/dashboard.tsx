@@ -7,12 +7,18 @@ import { FoodCatering } from "./food-catering"
 import { RevenueTracking } from "./revenue-tracking"
 import { BookingManagement } from "./booking-management"
 
-export function AdminDashboard({ userData }) {
+interface AdminDashboardProps {
+  userData: {
+    name: string;
+  };
+}
+
+export function AdminDashboard({ userData }: AdminDashboardProps) {
   const [activeTab, setActiveTab] = useState("rooms")
 
   return (
     <div className="flex min-h-screen">
-      {/* Sidebar */}
+      
       <div className="w-64 bg-[#002060] text-white p-4 hidden md:block">
         <div className="mb-8">
           <h2 className="text-xl font-bold">Admin Panel</h2>
@@ -55,7 +61,7 @@ export function AdminDashboard({ userData }) {
         </nav>
       </div>
 
-      {/* Mobile Tabs */}
+      
       <div className="md:hidden w-full px-4 py-4">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-4">
@@ -67,7 +73,6 @@ export function AdminDashboard({ userData }) {
         </Tabs>
       </div>
 
-      {/* Main Content */}
       <div className="flex-1 p-6">
         <h1 className="text-2xl font-bold text-[#002060] mb-6 md:hidden">Admin Dashboard</h1>
 

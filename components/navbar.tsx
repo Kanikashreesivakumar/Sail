@@ -4,14 +4,21 @@ import { useState } from "react"
 import Image from "next/image"
 import { Menu, X } from "lucide-react"
 
-export function Navbar({ isLoggedIn, isAdmin, onNavigate, onLogout }) {
+interface NavbarProps {
+  isLoggedIn: boolean;
+  isAdmin: boolean;
+  onNavigate: (page: string) => void;
+  onLogout: () => void;
+}
+
+export function Navbar({ isLoggedIn, isAdmin, onNavigate, onLogout }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen)
   }
 
-  const handleNavClick = (page) => {
+  const handleNavClick = (page: string) => {
     onNavigate(page)
     setMobileMenuOpen(false)
   }
@@ -20,7 +27,7 @@ export function Navbar({ isLoggedIn, isAdmin, onNavigate, onLogout }) {
     <nav className="bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          {/* Logo and Brand */}
+         
           <div className="flex items-center">
             <div className="flex-shrink-0 w-10 h-10 relative">
               <Image src="/sail-logo.png" alt="SAIL Logo" width={40} height={40} className="object-contain" />
@@ -30,7 +37,6 @@ export function Navbar({ isLoggedIn, isAdmin, onNavigate, onLogout }) {
             </div>
           </div>
 
-          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
             <button
               onClick={() => handleNavClick("home")}
@@ -81,7 +87,7 @@ export function Navbar({ isLoggedIn, isAdmin, onNavigate, onLogout }) {
             )}
           </div>
 
-          {/* Mobile menu button */}
+          
           <div className="md:hidden flex items-center">
             <button
               onClick={toggleMobileMenu}
@@ -93,7 +99,7 @@ export function Navbar({ isLoggedIn, isAdmin, onNavigate, onLogout }) {
         </div>
       </div>
 
-      {/* Mobile Navigation */}
+   
       {mobileMenuOpen && (
         <div className="md:hidden bg-white border-t">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">

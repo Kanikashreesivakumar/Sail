@@ -3,7 +3,11 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 
-export function HeroPage({ onProceed }) {
+interface HeroPageProps {
+  onProceed: () => void;
+}
+
+export function HeroPage({ onProceed }: HeroPageProps) {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white">
       <div className="text-center max-w-md px-4">

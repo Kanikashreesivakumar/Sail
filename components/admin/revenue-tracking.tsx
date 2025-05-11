@@ -7,7 +7,6 @@ import { Download } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useState } from "react"
 
-// Mock revenue data
 const revenueData = {
   totalBookings: 42,
   totalRevenue: 126000,

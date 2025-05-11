@@ -160,15 +160,28 @@ export function BookingFlow({ onComplete }: BookingFlowProps) {
               : undefined,
             room: bookingData.room
               ? { number: bookingData.room }
-              : undefined,
-          } as BookingData}
+              : { number: "" },
+          }}
           onContinue={handleGuestHouseSubmit}
           onBack={handleGuestHouseBack}
         />
       )
 
     case "catering":
-      return <CateringPage bookingData={bookingData} onContinue={handleCateringSubmit} onBack={handleGuestHouseBack} />
+      return (
+        <CateringPage
+          bookingData={{
+            ...bookingData,
+            checkIn: bookingData.startDate ? new Date(bookingData.startDate) : undefined,
+            checkOut: bookingData.endDate ? new Date(bookingData.endDate) : undefined,
+            meals: bookingData.meals
+              ? { grandTotal: { total: parseFloat(bookingData.meals) } }
+              : { grandTotal: { total: 0 } },
+          } as BookingData}
+          onContinue={handleCateringSubmit}
+          onBack={handleGuestHouseBack}
+        />
+      )
 
     case "payment":
       return (
@@ -178,6 +191,10 @@ export function BookingFlow({ onComplete }: BookingFlowProps) {
             bookingCharge: bookingData.bookingCharge || 0,
             checkIn: bookingData.checkIn ? new Date(bookingData.checkIn) : new Date(),
             checkOut: bookingData.checkOut ? new Date(bookingData.checkOut) : new Date(),
+            meals: bookingData.meals
+              ? { grandTotal: { total: parseFloat(bookingData.meals) } }
+              : { grandTotal: { total: 0 } },
+            employeeData: bookingData.employeeData || { name: "" }, 
           }}
           onContinue={handlePaymentComplete}
           onBack={handlePaymentBack}
