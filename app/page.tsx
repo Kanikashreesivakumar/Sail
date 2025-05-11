@@ -2,10 +2,9 @@
 
 import { useState } from "react"
 import { BookingFlow } from "@/components/booking-flow"
-import { HomePage } from "@/components/home-page"
+import { HomePage } from "@/components/ui/home-page"  
 import { Navbar } from "@/components/navbar"
-import { EmployeeDashboard } from "@/components/employee/dashboard"
-import { AdminDashboard } from "@/components/admin/dashboard"
+
 import { AboutPage } from "@/components/about-page"
 
 export default function Home() {

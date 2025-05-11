@@ -267,10 +267,7 @@ export function ConfirmationPage({
                   Download Receipt
                 </Button>
               </div>
-
-             
-              
-            </CardContent>
+               </CardContent>
           </Card>
         </div>
       </main>
